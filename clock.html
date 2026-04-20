@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript Project</title>
+</head>
+<body onload="clockDate">
+    <div>
+        <h1 class="clockdate"></h1>
+    </div>
+    <div>
+        <input type="text">
+        <button>Add task</button>
+        <button>Remove task</button>
+    </div>
+    <div>
+        <label>Notes Section</label>
+        <input type="textarea">
+    </div>
+    <script>
+        function clockDate(){
+            const element= document.getElementsByClassName("clockdate")[0];
+            const date=new Date().toLocaleString();
+            element.textContent=date;
+        }
+        setInterval(clockDate,1000)
+    </script>
+</body>
+</html>
