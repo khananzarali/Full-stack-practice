@@ -1,14 +1,23 @@
-<body>
-    <div>
-        <button onclick="Addtask()">Add Task</button>
+<html>
+    <body>
+            <button onclick="Addtask()">Add Task</button>
         <button onclick="RemoveTask()">Remove Task</button>
-    </div>
+        <input type="text" class="taskinput">
+    <ul class="todolist">
+
+    </ul>
+
     <script>
         function Addtask(){
-
+            const element=document.querySelector(".todolist");
+            const child=document.createElement("li");
+            const input=document.querySelector(".taskinput")
+            child.textContent=input.value;
+            element.append(child);
         }
         function RemoveTask(){
-            
+
         }
     </script>
 </body>
+</html>
