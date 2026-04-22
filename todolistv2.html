@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional To-Do</title>
+    <style>
+        button { margin: 8px; }
+        .completed span { text-decoration: line-through; color: gray; }
+    </style>
+</head>
+<body>
+    <form class="inputform">
+        <input type="text" class="textinput" placeholder="New task...">
+        <button type="submit">Submit</button>
+        <button type="reset">Clear All Tasks</button>
+    </form>
+    <ul class="todolist"></ul>
+
+<script>
+    // --- 1. DOM ELEMENTS ---
+    const form = document.querySelector(".inputform");
+    const input = document.querySelector(".textinput");
+    const todoList = document.querySelector(".todolist");
+
+    // --- 2. STATE (The Source of Truth) ---
+    // Load tasks from storage, or start with an empty array
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    // --- 3. CORE FUNCTIONS (Logic) ---
+    
+    // Adds a new task object to our state
+    function addTask(text) {
+        const newTask = {
+            id: Date.now().toString(), // Creates a unique ID based on the exact millisecond
+            text: text,
+            completed: false
+        };
+        tasks.push(newTask);
+        saveAndRender();
+    }
+
+    // Deletes a task by its ID
+    function deleteTask(id) {
+        tasks = tasks.filter(task => task.id !== id);
+        saveAndRender();
+    }
+
+    // Toggles the checked status
+    function toggleTask(id) {
+        const task = tasks.find(task => task.id === id);
+        if (task) task.completed = !task.completed;
+        saveAndRender();
+    }
+
+    // Saves the state to local storage and updates the screen
+    function saveAndRender() {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+        render(); // Redraw the UI
+    }
+
+    // --- 4. RENDER FUNCTION (The View) ---
+    // Wipes the list clean and redraws it perfectly from the State
+    function render() {
+        todoList.innerHTML = ""; 
+
+        tasks.forEach(task => {
+            const li = document.createElement("li");
+            li.dataset.id = task.id; // Secretly store the ID on the HTML element
+            
+            if (task.completed) li.classList.add("completed");
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = task.completed; // Remembers if it was checked!
+
+            const text = document.createElement("span");
+            text.textContent = task.text;
+
+            const removeBtn = document.createElement("button");
+            removeBtn.textContent = "❌";
+            removeBtn.classList.add("delete-btn"); // Add a class to identify it later
+
+            li.append(checkbox, text, removeBtn);
+            todoList.append(li);
+        });
+    }
+
+    // --- 5. EVENT LISTENERS (User Input) ---
+    
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (input.value.trim() === "") return;
+        
+        addTask(input.value);
+        input.value = ""; 
+    });
+
+    form.addEventListener("reset", (e) => {
+        e.preventDefault();
+        tasks = []; // Clear the state
+        saveAndRender();
+    });
+
+    // EVENT DELEGATION: Listen to the whole UL, figure out what was clicked
+    todoList.addEventListener("click", (e) => {
+        const parentLi = e.target.closest("li");
+        if (!parentLi) return; // If they clicked outside a list item, do nothing
+        
+        const taskId = parentLi.dataset.id; // Get the ID of the clicked task
+
+        if (e.target.matches(".delete-btn")) {
+            deleteTask(taskId);
+        } else if (e.target.matches("input[type='checkbox']")) {
+            toggleTask(taskId);
+        }
+    });
+
+    // --- 6. INITIALIZATION ---
+    render(); // Draw the list when the page loads
+
+</script>
+</body>
+</html>
