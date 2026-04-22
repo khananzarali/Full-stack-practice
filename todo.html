@@ -10,13 +10,21 @@
     <script>
         function Addtask(){
             const element=document.querySelector(".todolist");
-            const child=document.createElement("li");
-            const input=document.querySelector(".taskinput")
-            child.textContent=input.value;
-            element.append(child);
+            const childwrapper=document.createElement("div");
+            const checkbox=document.createElement("input");
+            checkbox.type="checkbox";
+            const button=document.createElement("button");
+            button.textContent="X"
+            button.onclick=RemoveTask;
+            const text=document.querySelector(".taskinput").value;
+            childwrapper.append(checkbox);
+            childwrapper.append(text);
+            childwrapper.append(button);
+            element.append(childwrapper);
+            
         }
         function RemoveTask(){
-
+            event.target.parentElement.remove()
         }
     </script>
 </body>

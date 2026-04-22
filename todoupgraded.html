@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        button{
+            margin:8px;
+        }
+    </style>
+</head>
+<body>
+    <form class="inputform"><!--lets you enter stuff without an add button-->
+        <input type="text" class="textinput">
+        <button type="submit">submit</button>
+        <button type="reset">clear all tasks</button>
+    </form>
+    <ul class="todolist"></ul>
+ <script>
+    const forms = document.querySelector(".inputform");
+const todolist = document.querySelector(".todolist");
+
+// 1. Move the creation logic into a function so loadtask can use it too
+function createTaskElement(taskText) {
+    const childwrapper = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+
+    const text = document.createElement("span");
+    text.textContent = taskText;
+
+    const removebtn = document.createElement("button");
+    removebtn.textContent = "❌";
+
+    removebtn.addEventListener("click", (event) => {
+        event.target.parentElement.remove();
+        savetasks(); // Update storage after deleting
+    });
+
+    childwrapper.append(checkbox, text, removebtn);
+    todolist.append(childwrapper);
+}
+
+forms.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const inputField = document.querySelector(".textinput");
+    const input = inputField.value;
+
+    if (input.trim() === "") return; // Don't add empty tasks
+
+    createTaskElement(input);
+    savetasks(); // Update storage after adding
+    inputField.value = "";
+});
+
+forms.addEventListener("reset", (event) => {
+    event.preventDefault();
+    todolist.innerHTML = "";
+    localStorage.removeItem("tasks"); // Clear storage when clicking clear
+});
+
+function savetasks() {
+    const task = [];
+    document.querySelectorAll(".todolist span").forEach(taskspan => task.push(taskspan.textContent));
+    localStorage.setItem("tasks", JSON.stringify(task));
+}
+
+function loadtask() {
+    // FIXED: Changed setItem to getItem
+    const savedtask = JSON.parse(localStorage.getItem("tasks")) || [];
+    savedtask.forEach(taskText => {
+        createTaskElement(taskText);
+    });
+}
+
+// 2. RUN THE LOAD FUNCTION when the page opens
+loadtask();
+ </script>
+</body>
+</html>
