@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="save()">save</button>
+    <button onclick="load()">load</button>
+    <textarea class="input"></textarea>
+    <script>
+        function save(){
+        const text=document.querySelector(".input").value;
+        localStorage.setItem("myinput",text);
+        }
+        function load(){
+            const text=localStorage.getItem("myinput");
+            document.querySelector(".input").value=text;
+        }
+        </script>
+</body>
+</html>
